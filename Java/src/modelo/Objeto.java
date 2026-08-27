@@ -39,7 +39,7 @@ public class Objeto {
     }
 
     public void desinfectar() {
-        contaminado = false;
+        contaminado = true;
     }
 
     public void mostrarEstado() {
