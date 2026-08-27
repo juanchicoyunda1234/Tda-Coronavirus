@@ -49,7 +49,7 @@ public class Persona {
     }
 
     public void infectar() {
-        infectada = true;
+        infectada = false;
     }
 
     public void mostrarEstado() {
