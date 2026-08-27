@@ -46,6 +46,23 @@ public class Main {
                 cadena.tocarRostro(luis)
         );
 
+        System.out.println("\n===== ESTADO TRAS EL CONTAGIO =====");
+        cadena.mostrarEstado();
+
+        System.out.println("\n===== PREVENCION =====");
+
+        System.out.println(
+                cadena.lavarManos(ana)
+        );
+
+        System.out.println(
+                cadena.lavarManos(luis)
+        );
+
+        System.out.println(
+                cadena.desinfectarObjeto(teclado)
+        );
+
         System.out.println("\n===== ESTADO FINAL =====");
         cadena.mostrarEstado();
     }

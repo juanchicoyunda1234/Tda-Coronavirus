@@ -31,15 +31,15 @@ public class Objeto {
     }
 
     /*
-     * Metodos internos.
-     * CadenaTransmision controla cuando se utilizan.
+     * Metodos de mutacion del estado.
+     * Deben usarse solo desde CadenaTransmision.
      */
     public void contaminar() {
         contaminado = true;
     }
 
     public void desinfectar() {
-        contaminado = true;
+        contaminado = false;
     }
 
     public void mostrarEstado() {

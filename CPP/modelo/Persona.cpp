@@ -4,34 +4,44 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
+#include <cctype>
 
 class Persona {
 private:
-    std::string nombre;
+    const std::string nombre;
     bool infectada;
     bool manosContaminadas;
 
-public:
-    Persona(std::string nombre, bool infectada);
-
-    std::string getNombre() const;
-    bool estaInfectada() const;
-    bool tieneManosContaminadas() const;
+    friend class CadenaTransmision;
 
     void contaminarManos();
     void lavarManos();
     void infectar();
 
+public:
+    Persona(const std::string& nombre, bool infectada);
+
+    std::string getNombre() const;
+    bool estaInfectada() const;
+    bool tieneManosContaminadas() const;
+
     void mostrarEstado() const;
 };
 
-Persona::Persona(std::string nombre, bool infectada) {
-    if (nombre.empty()) {
+static bool nombreVacio(const std::string& nombre) {
+    for (char c : nombre) {
+        if (!std::isspace(static_cast<unsigned char>(c))) {
+            return false;
+        }
+    }
+    return true;
+}
+
+Persona::Persona(const std::string& nombre, bool infectada)
+    : nombre(nombre), infectada(infectada), manosContaminadas(false) {
+    if (nombreVacio(this->nombre)) {
         throw std::invalid_argument("El nombre no puede estar vacio.");
     }
-    this->nombre = nombre;
-    this->infectada = infectada;
-    this->manosContaminadas = false;
 }
 
 std::string Persona::getNombre() const {

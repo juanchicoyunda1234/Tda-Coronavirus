@@ -20,6 +20,8 @@ private:
 
     void validarPersona(Persona* persona) const;
     void validarObjeto(Objeto* objeto) const;
+    bool contienePersona(const Persona* persona) const;
+    bool contieneObjeto(const Objeto* objeto) const;
 
 public:
     CadenaTransmision(int personasMaximas, int objetosMaximos);
@@ -49,8 +51,8 @@ CadenaTransmision::CadenaTransmision(int personasMaximas, int objetosMaximos) {
     this->personasMaximas = personasMaximas;
     this->objetosMaximos = objetosMaximos;
 
-    personas = new Persona*[personasMaximas];
-    objetos = new Objeto*[objetosMaximos];
+    personas = new Persona*[personasMaximas]();
+    objetos = new Objeto*[objetosMaximos]();
 
     topePersonas = 0;
     topeObjetos = 0;
@@ -65,6 +67,9 @@ void CadenaTransmision::agregarPersona(Persona* persona) {
     if (persona == nullptr) {
         throw std::invalid_argument("La persona no puede ser nula.");
     }
+    if (contienePersona(persona)) {
+        throw std::runtime_error("La persona ya esta registrada.");
+    }
     if (topePersonas >= personasMaximas) {
         throw std::runtime_error("No hay espacio para agregar otra persona.");
     }
@@ -75,6 +80,9 @@ void CadenaTransmision::agregarPersona(Persona* persona) {
 void CadenaTransmision::agregarObjeto(Objeto* objeto) {
     if (objeto == nullptr) {
         throw std::invalid_argument("El objeto no puede ser nulo.");
+    }
+    if (contieneObjeto(objeto)) {
+        throw std::runtime_error("El objeto ya esta registrado.");
     }
     if (topeObjetos >= objetosMaximos) {
         throw std::runtime_error("No hay espacio para agregar otro objeto.");
@@ -100,13 +108,30 @@ std::string CadenaTransmision::tocarObjeto(Persona* persona, Objeto* objeto) {
     validarPersona(persona);
     validarObjeto(objeto);
 
-    if (!objeto->estaContaminado()) {
-        return persona->getNombre() + " toca " + objeto->getNombre() + ", pero el objeto esta limpio.";
+    bool manosAntes = persona->tieneManosContaminadas();
+    bool objetoAntes = objeto->estaContaminado();
+
+    if (!manosAntes && !objetoAntes) {
+        return persona->getNombre() + " toca " + objeto->getNombre() + ", pero ambos estan limpios.";
     }
 
-    persona->contaminarManos();
+    if (objetoAntes) {
+        persona->contaminarManos();
+    }
 
-    return persona->getNombre() + " toca " + objeto->getNombre() + ". Sus manos quedan contaminadas.";
+    if (manosAntes) {
+        objeto->contaminar();
+    }
+
+    if (objetoAntes && !manosAntes) {
+        return persona->getNombre() + " toca " + objeto->getNombre() + ". Sus manos quedan contaminadas.";
+    }
+
+    if (manosAntes && !objetoAntes) {
+        return persona->getNombre() + " toca " + objeto->getNombre() + ". El objeto queda contaminado.";
+    }
+
+    return persona->getNombre() + " toca " + objeto->getNombre() + ". Manos y objeto siguen contaminados.";
 }
 
 std::string CadenaTransmision::tenerContacto(Persona* origen, Persona* destino) {
@@ -170,12 +195,36 @@ void CadenaTransmision::validarPersona(Persona* persona) const {
     if (persona == nullptr) {
         throw std::invalid_argument("La persona no puede ser nula.");
     }
+    if (!contienePersona(persona)) {
+        throw std::invalid_argument("La persona no esta registrada en la cadena de transmision.");
+    }
 }
 
 void CadenaTransmision::validarObjeto(Objeto* objeto) const {
     if (objeto == nullptr) {
         throw std::invalid_argument("El objeto no puede ser nulo.");
     }
+    if (!contieneObjeto(objeto)) {
+        throw std::invalid_argument("El objeto no esta registrado en la cadena de transmision.");
+    }
+}
+
+bool CadenaTransmision::contienePersona(const Persona* persona) const {
+    for (int i = 0; i < topePersonas; i++) {
+        if (personas[i] == persona) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CadenaTransmision::contieneObjeto(const Objeto* objeto) const {
+    for (int i = 0; i < topeObjetos; i++) {
+        if (objetos[i] == objeto) {
+            return true;
+        }
+    }
+    return false;
 }
 
 #endif

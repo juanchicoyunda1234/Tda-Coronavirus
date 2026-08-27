@@ -4,30 +4,41 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
+#include <cctype>
 
 class Objeto {
 private:
-    std::string nombre;
+    const std::string nombre;
     bool contaminado;
 
-public:
-    Objeto(std::string nombre);
-
-    std::string getNombre() const;
-    bool estaContaminado() const;
+    friend class CadenaTransmision;
 
     void contaminar();
     void desinfectar();
 
+public:
+    Objeto(const std::string& nombre);
+
+    std::string getNombre() const;
+    bool estaContaminado() const;
+
     void mostrarEstado() const;
 };
 
-Objeto::Objeto(std::string nombre) {
-    if (nombre.empty()) {
+static bool nombreObjetoVacio(const std::string& nombre) {
+    for (char c : nombre) {
+        if (!std::isspace(static_cast<unsigned char>(c))) {
+            return false;
+        }
+    }
+    return true;
+}
+
+Objeto::Objeto(const std::string& nombre)
+    : nombre(nombre), contaminado(false) {
+    if (nombreObjetoVacio(this->nombre)) {
         throw std::invalid_argument("El nombre del objeto no puede estar vacio.");
     }
-    this->nombre = nombre;
-    this->contaminado = false;
 }
 
 std::string Objeto::getNombre() const {

@@ -1,24 +1,48 @@
-﻿```mermaid
+```mermaid
 classDiagram
-    class ClaseBase {
-        #atributoComun
-        +metodoAbstracto()*
+    class Persona {
+        -String nombre
+        -boolean infectada
+        -boolean manosContaminadas
+        +Persona(String, boolean)
+        +getNombre() String
+        +estaInfectada() boolean
+        +tieneManosContaminadas() boolean
+        +contaminarManos()
+        +lavarManos()
+        +infectar()
+        +mostrarEstado()
     }
-    class ClaseHija1 {
-        -atributoPropio1
-        +metodoAbstracto()
+    class Objeto {
+        -String nombre
+        -boolean contaminado
+        +Objeto(String)
+        +getNombre() String
+        +estaContaminado() boolean
+        +contaminar()
+        +desinfectar()
+        +mostrarEstado()
     }
-    class ClaseHija2 {
-        -atributoPropio2
-        +metodoAbstracto()
+    class CadenaTransmision {
+        -Persona[] personas
+        -Objeto[] objetos
+        -int topePersonas
+        -int topeObjetos
+        +CadenaTransmision(int, int)
+        +agregarPersona(Persona)
+        +agregarObjeto(Objeto)
+        +estornudarSobreObjeto(Persona, Objeto) String
+        +tocarObjeto(Persona, Objeto) String
+        +tenerContacto(Persona, Persona) String
+        +tocarRostro(Persona) String
+        +lavarManos(Persona) String
+        +desinfectarObjeto(Objeto) String
+        +mostrarEstado()
+        -validarPersona(Persona)
+        -validarObjeto(Objeto)
+        -contienePersona(Persona) boolean
+        -contieneObjeto(Objeto) boolean
     }
-    class Gestor {
-        -ClaseBase[] elementos
-        -int cantidad
-        +registrar(ClaseBase) boolean
-        +mostrarTodos()
-    }
-    ClaseBase <|-- ClaseHija1
-    ClaseBase <|-- ClaseHija2
-    Gestor o-- ClaseBase
+    CadenaTransmision o-- Persona
+    CadenaTransmision o-- Objeto
 ```

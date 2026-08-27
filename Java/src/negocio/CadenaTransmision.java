@@ -60,6 +60,12 @@ public class CadenaTransmision {
             );
         }
 
+        if (contienePersona(persona)) {
+            throw new IllegalStateException(
+                    "La persona ya esta registrada."
+            );
+        }
+
         if (topePersonas >= personas.length) {
             throw new IllegalStateException(
                     "No hay espacio para agregar otra persona."
@@ -81,6 +87,12 @@ public class CadenaTransmision {
         if (objeto == null) {
             throw new IllegalArgumentException(
                     "El objeto no puede ser nulo."
+            );
+        }
+
+        if (contieneObjeto(objeto)) {
+            throw new IllegalStateException(
+                    "El objeto ya esta registrado."
             );
         }
 
@@ -136,20 +148,45 @@ public class CadenaTransmision {
         validarPersona(persona);
         validarObjeto(objeto);
 
-        if (!objeto.estaContaminado()) {
+        boolean manosAntes = persona.tieneManosContaminadas();
+        boolean objetoAntes = objeto.estaContaminado();
+
+        if (!manosAntes && !objetoAntes) {
 
             return persona.getNombre()
                     + " toca "
                     + objeto.getNombre()
-                    + ", pero el objeto esta limpio.";
+                    + ", pero ambos estan limpios.";
         }
 
-        persona.contaminarManos();
+        if (objetoAntes) {
+            persona.contaminarManos();
+        }
+
+        if (manosAntes) {
+            objeto.contaminar();
+        }
+
+        if (objetoAntes && !manosAntes) {
+
+            return persona.getNombre()
+                    + " toca "
+                    + objeto.getNombre()
+                    + ". Sus manos quedan contaminadas.";
+        }
+
+        if (manosAntes && !objetoAntes) {
+
+            return persona.getNombre()
+                    + " toca "
+                    + objeto.getNombre()
+                    + ". El objeto queda contaminado.";
+        }
 
         return persona.getNombre()
                 + " toca "
                 + objeto.getNombre()
-                + ". Sus manos quedan contaminadas.";
+                + ". Manos y objeto siguen contaminados.";
     }
 
 
@@ -285,6 +322,12 @@ public class CadenaTransmision {
                     "La persona no puede ser nula."
             );
         }
+
+        if (!contienePersona(persona)) {
+            throw new IllegalArgumentException(
+                    "La persona no esta registrada en la cadena de transmision."
+            );
+        }
     }
 
     private void validarObjeto(Objeto objeto) {
@@ -294,5 +337,33 @@ public class CadenaTransmision {
                     "El objeto no puede ser nulo."
             );
         }
+
+        if (!contieneObjeto(objeto)) {
+            throw new IllegalArgumentException(
+                    "El objeto no esta registrado en la cadena de transmision."
+            );
+        }
+    }
+
+    private boolean contienePersona(Persona persona) {
+
+        for (int i = 0; i < topePersonas; i++) {
+            if (personas[i] == persona) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean contieneObjeto(Objeto objeto) {
+
+        for (int i = 0; i < topeObjetos; i++) {
+            if (objetos[i] == objeto) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

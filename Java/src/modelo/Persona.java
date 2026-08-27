@@ -37,8 +37,8 @@ public class Persona {
     }
 
     /*
-     * Metodos internos.
-     * CadenaTransmision controla cuando se utilizan.
+     * Metodos de mutacion del estado.
+     * Deben usarse solo desde CadenaTransmision.
      */
     public void contaminarManos() {
         manosContaminadas = true;
@@ -49,7 +49,7 @@ public class Persona {
     }
 
     public void infectar() {
-        infectada = false;
+        infectada = true;
     }
 
     public void mostrarEstado() {
